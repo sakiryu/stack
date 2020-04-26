@@ -10,8 +10,13 @@ class Stack
 {
   var arr: array<int>
   
-  constructor(var size: int) requires (size >= 0) ensures (arr.Length == size)
+  constructor(size: int) requires size >= 0 ensures arr.Length == size 
   {
-    this.arr = new int[size];
+    arr := new int[size];
   }
+}
+
+method Main()
+{
+  
 }
