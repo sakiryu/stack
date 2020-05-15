@@ -1,30 +1,30 @@
 class Stack {
   var arr : array<int>;
-  var index : nat;
+  var index : int;
   ghost var repr: set<object>;
   ghost var elements: seq<int>;
 
-  predicate Valid() 
+  predicate Valid()
     reads this, repr
   {
-    arr in repr 
-    && arr.Length > 0 
-    && 0 <= index < arr.Length 
-    && elements == arr[0..index]
+    arr in repr
+    && arr.Length > 0
+    && index < arr.Length
+   // && elements == arr[0..index]
   }
 
   predicate Empty() reads this
   {
-    index == 0
+    index == -1
   }
   predicate Full() reads this
   {
     index >= arr.Length
   }
 
-  constructor(size: nat) 
-    requires size > 0 
-    ensures Valid()
+  constructor(size: nat)
+    requires size > 0
+    ensures !Full()
     ensures Empty()
     ensures elements == []
     ensures fresh(arr)
@@ -32,14 +32,15 @@ class Stack {
   {
     arr := new int[size];
     elements := [];
-    index := 0;
+    index := -1;
     repr := { arr };
   }
 
   method Top()
-    returns (element: int) 
+    returns (element: int)
     requires Valid()
     requires !Empty()
+    requires index >= 0
     ensures element == arr[index]
     ensures index == old(index)
   {
@@ -54,30 +55,42 @@ class Stack {
     return index;
   }
 
-  method Push(element : int) 
+  method Push(element : int)
     returns (result: bool)
     modifies arr, `index
     //requires Valid()
     //requires !Full()
-   // ensures index == old(index) + 1
+    ensures -1 <= index < (arr.Length - 1) ==> index == old(index) + 1
   {
-    if(0 <= index < arr.Length)
+    if(-1 <= index < (arr.Length - 1))
     {
-      arr[index] := element;
       index := index+1;
+
+      arr[index] := element;
       return true;
+    } else {
+      return false;
     }
-    return false;
   }
 
   method Pop() returns (elem : int)
-    modifies this
-    requires Valid()
-    requires !Empty()
+    modifies arr,`index
+    //requires Valid()
+    //requires !Empty()
     decreases index
+    ensures 0 <= index < arr.Length ==> index == old(index) - 1
+    ensures 0 <= index < arr.Length ==> elem == arr[old(index)]
   {
-    elem := arr[index];
-    index := index - 1;
+    if(0 <= index < arr.Length)
+    {
+      elem := arr[index];
+      //remove elemento arr[index]
+
+      index := index - 1;
+    } else {
+      elem :=  -9999;
+    }
+
   }
 }
 
@@ -85,14 +98,13 @@ class Stack {
 method Main()
 {
   var stack := new Stack(4);
-  var a := stack.Push(1);
+  var a := stack.Push(7);
 
- // a := stack.IsFull();
-  a := stack.Push(2);
-  a := stack.Push(3);
-  a := stack.Push(3);
-  a := stack.Push(3);
-  a := stack.Push(3);
+  var b := stack.Pop();
+  assert 7 == b;
+
+  // a := stack.IsFull();
+  // a := stack.Push(2);
 
   //result := stack.Push(5);
   //result := stack.Push(5);
