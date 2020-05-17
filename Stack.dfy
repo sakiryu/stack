@@ -63,7 +63,10 @@ class Stack {
       index == old(index) + 1 &&
       result == true &&
       arr[index] == element
-    ensures old(index) == (old(arr).Length - 1) ==> result == false
+    ensures old(index) == (old(arr).Length - 1) ==>
+     result == false &&
+     unchanged(`index) &&
+     unchanged(arr)
   {
 
     if(index == (arr.Length - 1))
