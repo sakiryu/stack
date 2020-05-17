@@ -89,17 +89,25 @@ class Stack {
     ensures elem == old(arr[index])
   {
       elem := arr[index];
-      //remover elemento arr[index] ?
-
       index := index - 1;
+  }
+
+  method ElementsAmount() returns (amount : int)
+  requires Valid()
+  modifies `index
+  ensures amount == index + 1
+  ensures unchanged(`index)
+  {
+    amount := index + 1;
   }
 }
 
 
 method Main()
 {
-  var stack := new Stack(3);
-  assert stack.arr.Length == 3;
+  var stackSize := 3;
+  var stack := new Stack(stackSize);
+  assert stack.arr.Length == stackSize;
   assert stack.Empty();
   assert !stack.Full();
 
@@ -116,8 +124,11 @@ method Main()
   a := stack.Push(8);
   a := stack.Push(9);
   a := stack.Push(10);
-  a := stack.Push(11);
-  assert a == false;
   assert stack.Full();
 
+  a := stack.Push(11);
+  assert a == false;
+
+  b := stack.ElementsAmount();
+  assert b == stackSize;
 }
