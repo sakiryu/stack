@@ -59,17 +59,18 @@ class Stack {
     returns (result: bool)
     modifies arr, `index
     requires Valid()
-    ensures !Full() ==> index == old(index) + 1
-    ensures !Full() ==> result == true
-    //ensures Full() ==> result == false
+    ensures old(index) < (old(arr).Length - 1) ==>
+      index == old(index) + 1 &&
+      result == true &&
+      arr[index] == element
+    ensures old(index) == (old(arr).Length - 1) ==> result == false
   {
 
     if(index == (arr.Length - 1))
     {
-      result := false;     
+      result := false;
     } else {
       index := index+1;
-
       arr[index] := element;
       result := true;
     }
