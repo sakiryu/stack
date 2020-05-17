@@ -86,7 +86,7 @@ class Stack {
     requires !Empty()
     decreases index
     ensures index == old(index) - 1
-    ensures elem == arr[old(index)]
+    ensures elem == old(arr[index])
   {
       elem := arr[index];
       //remover elemento arr[index] ?
@@ -104,21 +104,14 @@ method Main()
   assert !stack.Full();
 
   var a := stack.Push(7);
+  assert a == true;
   assert stack.arr[0] == 7;
   assert stack.index == 0;
   assert !stack.Empty();
 
   var b := stack.Pop();
+  assert b == 7;
+  
   assert stack.Empty();
 
-// /  var b := stack.Pop();
- //s assert 7 == b;
-
-  // a := stack.IsFull();
-  // a := stack.Push(2);
-
-  //result := stack.Push(5);
-  //result := stack.Push(5);
-
-  //result := stack.Push(5);
 }
