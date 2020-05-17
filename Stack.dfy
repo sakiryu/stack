@@ -98,8 +98,8 @@ class Stack {
 
 method Main()
 {
-  var stack := new Stack(4);
-  assert stack.arr.Length == 4;
+  var stack := new Stack(3);
+  assert stack.arr.Length == 3;
   assert stack.Empty();
   assert !stack.Full();
 
@@ -111,7 +111,13 @@ method Main()
 
   var b := stack.Pop();
   assert b == 7;
-  
   assert stack.Empty();
+
+  a := stack.Push(8);
+  a := stack.Push(9);
+  a := stack.Push(10);
+  a := stack.Push(11);
+  assert a == false;
+  assert stack.Full();
 
 }
