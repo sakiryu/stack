@@ -100,14 +100,25 @@ class Stack {
   {
     amount := index + 1;
   }
-}
 
+  method MaxElementsAmount() returns (amount : int)
+  requires Valid()
+  modifies arr
+  ensures amount == arr.Length
+  ensures unchanged(arr)
+  {
+    amount := arr.Length;
+  }
+}
 
 method Main()
 {
   var stackSize := 3;
+
   var stack := new Stack(stackSize);
-  assert stack.arr.Length == stackSize;
+
+  var b := stack.MaxElementsAmount();
+  assert b == stackSize;
   assert stack.Empty();
   assert !stack.Full();
 
@@ -117,7 +128,7 @@ method Main()
   assert stack.index == 0;
   assert !stack.Empty();
 
-  var b := stack.Pop();
+  b := stack.Pop();
   assert b == 7;
   assert stack.Empty();
 
