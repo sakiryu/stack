@@ -7,7 +7,7 @@ class Stack {
   predicate Valid()
     reads this, repr
   {
-    arr in repr
+    this in repr
     && arr.Length > 0
     && -1 <= index < arr.Length
    // && elements == arr[0..index]
@@ -26,6 +26,7 @@ class Stack {
     requires size > 0
     ensures !Full()
     ensures Empty()
+    ensures Valid()
     ensures elements == []
     ensures fresh(arr)
     ensures arr.Length == size
@@ -33,7 +34,7 @@ class Stack {
     arr := new nat[size];
     elements := [];
     index := -1;
-    repr := { arr };
+    repr := { this };
   }
 
   method Top()
@@ -98,15 +99,17 @@ class Stack {
 method Main()
 {
   var stack := new Stack(4);
-  assert stack.index == -1;
   assert stack.arr.Length == 4;
   assert stack.Empty();
   assert !stack.Full();
 
-  //var a := stack.Push(7);
+  var a := stack.Push(7);
+  assert stack.arr[0] == 7;
+  assert stack.index == 0;
+  assert !stack.Empty();
 
-  print(stack.arr[0]);
-  //assert stack.arr[0] == 7;
+  var b := stack.Pop();
+  assert stack.Empty();
 
 // /  var b := stack.Pop();
  //s assert 7 == b;
