@@ -1,45 +1,47 @@
 class Stack {
-  var arr : array<int>;
-  var index : nat;
+  var arr : array<nat>;
+  var index : int;
   ghost var repr: set<object>;
   ghost var elements: seq<int>;
 
-  predicate Valid() 
+  predicate Valid()
     reads this, repr
   {
-    arr in repr 
-    && arr.Length > 0 
-    && 0 <= index < arr.Length 
-    && elements == arr[0..index]
+    this in repr
+    && arr.Length > 0
+    && -1 <= index < arr.Length
+   // && elements == arr[0..index]
   }
 
   predicate Empty() reads this
   {
-    index == 0
+    index == -1
   }
   predicate Full() reads this
   {
-    index >= arr.Length
+    index == arr.Length - 1
   }
 
-  constructor(size: nat) 
-    requires size > 0 
-    ensures Valid()
+  constructor(size: nat)
+    requires size > 0
+    ensures !Full()
     ensures Empty()
+    ensures Valid()
     ensures elements == []
     ensures fresh(arr)
     ensures arr.Length == size
   {
-    arr := new int[size];
+    arr := new nat[size];
     elements := [];
-    index := 0;
-    repr := { arr };
+    index := -1;
+    repr := { this };
   }
 
   method Top()
-    returns (element: int) 
+    returns (element: int)
     requires Valid()
     requires !Empty()
+    requires index >= 0
     ensures element == arr[index]
     ensures index == old(index)
   {
@@ -54,48 +56,90 @@ class Stack {
     return index;
   }
 
-  method Push(element : int) 
+  method Push(element : nat)
     returns (result: bool)
     modifies arr, `index
-    //requires Valid()
-    //requires !Full()
-   // ensures index == old(index) + 1
+    requires Valid()
+    ensures old(index) < (old(arr).Length - 1) ==>
+      index == old(index) + 1 &&
+      result == true &&
+      arr[index] == element
+    ensures old(index) == (old(arr).Length - 1) ==>
+     result == false &&
+     unchanged(`index) &&
+     unchanged(arr)
   {
-    if(0 <= index < arr.Length)
+
+    if(index == (arr.Length - 1))
     {
-      arr[index] := element;
+      result := false;
+    } else {
       index := index+1;
-      return true;
+      arr[index] := element;
+      result := true;
     }
-    return false;
   }
 
-  method Pop() returns (elem : int)
-    modifies this
+    method Pop() returns (elem : nat)
+    modifies arr,`index
     requires Valid()
     requires !Empty()
     decreases index
+    ensures index == old(index) - 1
+    ensures elem == old(arr[index])
   {
-    elem := arr[index];
-    index := index - 1;
+      elem := arr[index];
+      index := index - 1;
+  }
+
+  method ElementsAmount() returns (amount : int)
+  requires Valid()
+  modifies `index
+  ensures amount == index + 1
+  ensures unchanged(`index)
+  {
+    amount := index + 1;
+  }
+
+  method MaxElementsAmount() returns (amount : int)
+  requires Valid()
+  modifies arr
+  ensures amount == arr.Length
+  ensures unchanged(arr)
+  {
+    amount := arr.Length;
   }
 }
 
-
 method Main()
 {
-  var stack := new Stack(4);
-  var a := stack.Push(1);
+  var stackSize := 3;
 
- // a := stack.IsFull();
-  a := stack.Push(2);
-  a := stack.Push(3);
-  a := stack.Push(3);
-  a := stack.Push(3);
-  a := stack.Push(3);
+  var stack := new Stack(stackSize);
 
-  //result := stack.Push(5);
-  //result := stack.Push(5);
+  var b := stack.MaxElementsAmount();
+  assert b == stackSize;
+  assert stack.Empty();
+  assert !stack.Full();
 
-  //result := stack.Push(5);
+  var a := stack.Push(7);
+  assert a == true;
+  assert stack.arr[0] == 7;
+  assert stack.index == 0;
+  assert !stack.Empty();
+
+  b := stack.Pop();
+  assert b == 7;
+  assert stack.Empty();
+
+  a := stack.Push(8);
+  a := stack.Push(9);
+  a := stack.Push(10);
+  assert stack.Full();
+
+  a := stack.Push(11);
+  assert a == false;
+
+  b := stack.ElementsAmount();
+  assert b == stackSize;
 }
