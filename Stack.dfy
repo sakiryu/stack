@@ -47,15 +47,6 @@ class Stack {
   {
     element := arr[index];
   }
-
-  method Elements()
-    returns (element: int)
-    requires !Empty()
-    requires Valid()
-  {
-    return index;
-  }
-
   method Push(element : nat)
     returns (result: bool)
     modifies arr, `index
