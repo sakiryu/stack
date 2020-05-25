@@ -107,7 +107,7 @@ class Stack {
     forall k :: 0 <= k <= arr.Length-1 && response.Length == arr.Length ==> response[k] == arr[( arr.Length-1-k)]
   }
 
-  method reverse() returns (response : array<nat>)
+  method Reverse() returns (response : array<nat>)
   requires Valid()
   requires !Empty()
   ensures Reversed(response)
@@ -163,7 +163,7 @@ method Main()
   assert a == false;
 
   var reverse := new nat[stackSize];
-  reverse := stack.reverse();
+  reverse := stack.Reverse();
   assert stack.Reversed(reverse);
 
   b := stack.ElementsAmount();
