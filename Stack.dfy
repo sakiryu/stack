@@ -9,7 +9,6 @@ class Stack {
   var arr : array<nat>;
   var index : int;
   ghost var repr: set<object>;
-  ghost var elements: seq<int>;
 
   predicate Valid()
     reads this, repr
@@ -33,12 +32,10 @@ class Stack {
     ensures !Full()
     ensures Empty()
     ensures Valid()
-    ensures elements == []
     ensures fresh(arr)
     ensures arr.Length == size
   {
     arr := new nat[size];
-    elements := [];
     index := -1;
     repr := { this };
   }
@@ -168,8 +165,7 @@ method Main()
   a := stack.Push(11);
   assert a == false;
 
-  var reverse := new nat[stackSize];
-  reverse := stack.Reverse();
+  var reverse := stack.Reverse();
   assert stack.Reversed(reverse);
 
   print reverse[..];
