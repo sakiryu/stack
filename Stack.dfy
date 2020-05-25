@@ -17,7 +17,6 @@ class Stack {
     this in repr
     && arr.Length > 0
     && -1 <= index < arr.Length
-   // && elements == arr[0..index]
   }
 
   predicate Empty() reads this
