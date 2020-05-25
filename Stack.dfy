@@ -1,3 +1,10 @@
+/*
+  T1
+
+  Integrantes:
+  Douglas Dallavale, Douglas Paz e João Vieira
+*/
+
 class Stack {
   var arr : array<nat>;
   var index : int;
@@ -169,5 +176,5 @@ method Main()
   b := stack.ElementsAmount();
   assert b == stackSize;
 
-  
+
 }
