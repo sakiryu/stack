@@ -173,8 +173,9 @@ method Main()
   reverse := stack.Reverse();
   assert stack.Reversed(reverse);
 
+  print reverse[..];
+  print stack.arr[..];
+
   b := stack.ElementsAmount();
   assert b == stackSize;
-
-
 }
