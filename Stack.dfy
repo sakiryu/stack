@@ -101,7 +101,7 @@ class Stack {
     amount := arr.Length;
   }
 
-  predicate reversed (response: array<nat>)
+  predicate Reversed (response: array<nat>)
   reads this, arr, response
   {
     forall k :: 0 <= k <= arr.Length-1 && response.Length == arr.Length ==> response[k] == arr[( arr.Length-1-k)]
@@ -110,7 +110,7 @@ class Stack {
   method reverse() returns (response : array<nat>)
   requires Valid()
   requires !Empty()
-  ensures reversed(response)
+  ensures Reversed(response)
   {
     var i:= 0;
     var j:= arr.Length-1;
@@ -164,7 +164,7 @@ method Main()
 
   var reverse := new nat[stackSize];
   reverse := stack.reverse();
-  assert stack.reversed(reverse);
+  assert stack.Reversed(reverse);
 
   b := stack.ElementsAmount();
   assert b == stackSize;
