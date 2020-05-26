@@ -1,5 +1,5 @@
 # Stack
-Stack data-structure of integers implemented in Dafny
+Stack data-structure of natural numbers implemented in Dafny
 
 # Enunciado do Problema:
 
